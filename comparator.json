@@ -1,0 +1,12 @@
+{
+  "challenge_module": "BMChallenge.Verification",
+  "solution_module": "BMProofs.Verification",
+  "theorem_names": [
+    "BoyerMoore.Checked.candidate_correct" 
+  ],
+  "permitted_axioms": [
+    "propext",
+    "Quot.sound",
+    "Classical.choice"
+  ]
+}
