@@ -1,3 +1,4 @@
+
 name: Lean Action CI
 
 on:
@@ -5,10 +6,59 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+
+    env:
+      COMPARATOR_BWRAP: /usr/local/bin/bm-ci-bwrap
 
     steps:
       - uses: actions/checkout@v7
-      - uses: leanprover/lean-action@v1
+
+      - name: Build Lean project
+        uses: leanprover/lean-action@v1
+
+      # Comparator の sandbox を準備する
+      - name: Prepare Comparator sandbox
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y bubblewrap apparmor
+
+          sudo install -m 0755 /usr/bin/bwrap /usr/local/bin/bm-ci-bwrap
+
+          sudo tee /etc/apparmor.d/bm-ci-bwrap > /dev/null <<'EOF'
+          abi <abi/4.0>,
+          include <tunables/global>
+
+          profile bm-ci-bwrap /usr/local/bin/bm-ci-bwrap flags=(unconfined) {
+            userns,
+          }
+          EOF
+          sudo apparmor_parser -r /etc/apparmor.d/bm-ci-bwrap
+
+      # sandbox が動作することを確認
+      - name: Check Comparator sandbox
+        run: |
+          "$COMPARATOR_BWRAP" \
+            --unshare-all \
+            --die-with-parent \
+            --ro-bind / / \
+            --proc /proc \
+            --dev /dev \
+            -- /usr/bin/true
+
+      # 検証課題をビルド
+      - name: Build challenge
+        run: lake build BMChallenge
+
+      # Comparator で検証
+      - name: Check proofs with Comparator
+        run: lake comparator
+
+      # Paranoid mode で検証
+      - name: Check proofs with Comparator (paranoid)
+        run: lake comparator --paranoid

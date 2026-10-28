@@ -1,7 +1,8 @@
 # BoyerMooreVerification
 
-Boyer-Moore majority vote algorithm の健全性についての Lean による検証
+[![Lean Action CI](https://github.com/rikitoro/BoyerMooreVerification/actions/workflows/lean_action_ci.yml/badge.svg?branch=master)](https://github.com/rikitoro/BoyerMooreVerification/actions/workflows/lean_action_ci.yml)
 
+Boyer-Moore majority vote algorithm の健全性についての Lean による検証
 
 Boyer-Moore majority vote algorithm :
 ```lean
