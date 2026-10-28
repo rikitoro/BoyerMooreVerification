@@ -35,6 +35,12 @@ theorem candidate_correct
   case inv1 =>
     exact fun pref _ state =>
       LoopInv pref state.fst state.snd
-  all_goals sorry
+  all_goals
+    grind [
+      LoopInv.init,
+      LoopInv.step_zero,
+      LoopInv.step_same,
+      LoopInv.step_diff,
+      LoopInv.result]
 
 end BoyerMoore.Checked
