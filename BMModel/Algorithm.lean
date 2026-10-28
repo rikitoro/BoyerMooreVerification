@@ -4,7 +4,7 @@ open Std.Do
 
 namespace BoyerMoore
 
-def majorityCandicdate {α : Type} [Inhabited α] [DecidableEq α]
+def majorityCandidate {α : Type} [Inhabited α] [DecidableEq α]
   (votes : List α) : α := Id.run do
   let mut m : α := default
   let mut c : Nat := 0
