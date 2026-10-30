@@ -1,4 +1,4 @@
-import BMProofs.Counting
+import BMModel.Specification
 
 namespace BoyerMoore.Checked
 
